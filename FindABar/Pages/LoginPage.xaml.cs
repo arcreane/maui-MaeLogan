@@ -64,8 +64,7 @@ public partial class LoginPage : ContentPage
         if (response.IsSuccessStatusCode)
         {
             // Auth OK
-           // await Navigation.PushAsync(new BarsListPage());
-        }
+            await Navigation.PushAsync(new BarsListPage());        }
         else
         {
             var error = await response.Content.ReadAsStringAsync();
