@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FindABar")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+b016d3beb517df3dad5f4fa4711957825ccd6167")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+6885df23b1b9cb5081b596e3f0c3e6d7e348a147")]
 [assembly: System.Reflection.AssemblyProductAttribute("FindABar")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FindABar")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

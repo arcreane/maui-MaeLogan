@@ -1,4 +1,5 @@
 using FindABar.Models;
+using Microsoft.Maui.Devices.Sensors;
 
 namespace FindABar.Pages;
 
@@ -10,15 +11,47 @@ public partial class BarsListPage : ContentPage
         LoadBars();
     }
 
-    private void LoadBars()
+    private async void LoadBars()
     {
-        // pour l'instant des données mockées
-        var bars = new List<Bar>
+        var status = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
+
+        if (status != PermissionStatus.Granted)
         {
-            new Bar { Name = "Le Zinc", Address = "123 Rue du Bar", Latitude = 0, Longitude = 0, Distance = 0.5 },
-            new Bar { Name = "La Buvette", Address = "456 Rue de la Soif", Latitude = 0, Longitude = 0, Distance = 1.2 },
-            new Bar { Name = "Chez Marcel", Address = "789 Rue de la Fête", Latitude = 0, Longitude = 0, Distance = 2.0 },
-        };
+            status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
+        }
+
+        if (status != PermissionStatus.Granted)
+        {
+            await DisplayAlert("Erreur", "Permission de localisation refusée", "OK");
+            return;
+        }
+
+        Console.WriteLine("Localisation autorisée, récupération...");
+
+        var location = await Geolocation.GetLastKnownLocationAsync();
+
+        if (location == null)
+        {
+            location = await Geolocation.GetLocationAsync(new GeolocationRequest
+            {
+                DesiredAccuracy = GeolocationAccuracy.High,
+                Timeout = TimeSpan.FromSeconds(10)
+            });
+        }
+
+        if (location == null)
+        {
+            await DisplayAlert("Erreur", "Impossible de déterminer la position", "OK");
+            return;
+        }
+
+        double latitude = location.Latitude;
+        double longitude = location.Longitude;
+
+        Console.WriteLine($"Coordonnées récupérées : {latitude}, {longitude}");
+
+        var placesService = new Services.PlacesService();
+        var bars = await placesService.GetNearbyBarsAsync(latitude, longitude);
 
         BarsCollectionView.ItemsSource = bars;
     }
