@@ -1,4 +1,5 @@
 using FindABar.Models;
+using FindABar.Services;
 using Microsoft.Maui.Devices.Sensors;
 
 namespace FindABar.Pages;
@@ -53,6 +54,37 @@ public partial class BarsListPage : ContentPage
         var placesService = new Services.PlacesService();
         var bars = await placesService.GetNearbyBarsAsync(latitude, longitude);
 
-        BarsCollectionView.ItemsSource = bars;
+        // calculer la distance réelle pour chaque bar
+        foreach (var bar in bars)
+        {
+            bar.Distance = GeoHelper.GetDistanceKm(latitude, longitude, bar.Latitude, bar.Longitude);
+        }
+
+        // trier
+        var barsSorted = bars.OrderBy(b => b.Distance).ToList();
+
+        BarsCollectionView.ItemsSource = barsSorted;
+
+    }
+    
+    private async void OnBarSelected(object sender, SelectionChangedEventArgs e)
+    {
+        Console.WriteLine("CLICK ON BAR");
+        if (e.CurrentSelection.FirstOrDefault() is Bar selectedBar)
+        {
+            var url = $"https://www.google.com/maps/search/?api=1&query={selectedBar.Latitude},{selectedBar.Longitude}";
+            try
+            {
+                await Launcher.Default.OpenAsync(url);
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Erreur", "Impossible d'ouvrir Google Maps", "OK");
+                Console.WriteLine(ex);
+            }
+
+            // désélectionner pour éviter bug de sélection bloquée
+            BarsCollectionView.SelectedItem = null;
+        }
     }
 }

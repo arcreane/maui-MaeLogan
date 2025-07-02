@@ -5,7 +5,7 @@
     Title="Bars à proximité">
 
     <Grid>
-        <CollectionView x:Name="BarsCollectionView">
+        <CollectionView x:Name="BarsCollectionView" SelectionMode="Single" SelectionChanged="OnBarSelected">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Frame Margin="10" BorderColor="Gray" CornerRadius="10">
@@ -18,5 +18,6 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
+
     </Grid>
 </ContentPage>

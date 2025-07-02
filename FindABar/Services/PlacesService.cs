@@ -48,15 +48,44 @@ public class PlacesService
                 var name = tags.TryGetProperty("name", out var n) ? n.GetString() ?? "" : "Bar sans nom";
                 var lat = element.GetProperty("lat").GetDouble();
                 var lon = element.GetProperty("lon").GetDouble();
+                
+                var street = tags.TryGetProperty("addr:street", out var s) ? s.GetString() : "";
+                var number = tags.TryGetProperty("addr:housenumber", out var h) ? h.GetString() : "";
+                var city = tags.TryGetProperty("addr:city", out var c) ? c.GetString() : "";
+
+                var address = $"{number} {street}, {city}".Trim().Replace(" ,", "").Trim(',');
 
                 bars.Add(new Bar
                 {
                     Name = name,
-                    Address = "",  // OSM ne fournit pas toujours l’adresse dans le node
+                    Address = address,  // OSM ne fournit pas toujours l’adresse dans le node
                     Latitude = lat,
                     Longitude = lon,
                     Distance = 0 // à calculer plus tard
                 });
+                
+                foreach (var bar in bars)
+                {
+                    var reverseUrl = $"https://nominatim.openstreetmap.org/reverse?format=json&lat={bar.Latitude}&lon={bar.Longitude}";
+
+                    // IMPORTANT: identifiez-vous, Nominatim l'exige
+                    var reverseclient = new HttpClient();
+                    reverseclient.DefaultRequestHeaders.Add("User-Agent", "FindABarApp/1.0 (mael.dabard@gmail.com)");
+
+                    var rerverseresponse = await reverseclient.GetAsync(reverseUrl);
+
+                    if (rerverseresponse.IsSuccessStatusCode)
+                    {
+                        var reversejson = await rerverseresponse.Content.ReadAsStringAsync();
+                        var reversedoc = JsonDocument.Parse(reversejson);
+
+                        var displayName = reversedoc.RootElement
+                            .GetProperty("display_name")
+                            .GetString();
+
+                        bar.Address = displayName ?? "NO ADDRESS";
+                    }
+                }
             }
         }
         else
