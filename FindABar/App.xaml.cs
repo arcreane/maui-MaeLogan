@@ -1,6 +1,4 @@
-﻿using FindABar.Pages;
-
-namespace FindABar;
+﻿namespace FindABar;
 
 public partial class App : Application
 {
@@ -8,5 +6,6 @@ public partial class App : Application
     {
         InitializeComponent();
 
-        MainPage = new NavigationPage(new LoginPage());    }
+        MainPage = new NavigationPage(new Pages.LoginPage());    
+    }
 }
