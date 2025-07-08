@@ -2,22 +2,273 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="FindABar.Pages.BarsListPage"
-    Title="Bars à proximité">
+    xmlns:pages="clr-namespace:FindABar.Pages"
+    Title="Bars à proximité"
+    BackgroundColor="#1A0F0A">
 
-    <Grid>
-        <CollectionView x:Name="BarsCollectionView" SelectionMode="Single" SelectionChanged="OnBarSelected">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Frame Margin="10" BorderColor="Gray" CornerRadius="10">
-                        <VerticalStackLayout>
-                            <Label Text="{Binding Name}" FontSize="18" />
-                            <Label Text="{Binding Address}" FontSize="14" />
-                            <Label Text="{Binding Distance, StringFormat='{0:F2} km'}" FontSize="12" />
-                        </VerticalStackLayout>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Actualiser" 
+                     Clicked="OnRefreshClicked" 
+                     Priority="0" 
+                     Order="Primary"
+                     IconImageSource="refresh.png"/>
+    </ContentPage.ToolbarItems>
+    
+    <ScrollView>
+        <Grid Padding="0" RowSpacing="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <!-- Header avec gradient bière blonde -->
+            <Frame Grid.Row="0" 
+                   HasShadow="True"
+                   CornerRadius="0"
+                   Padding="20,25,20,20"
+                   Margin="0"
+                   BackgroundColor="#B8860B">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <StackLayout Grid.Column="0">
+                        <Label Text="Découvrez les bars" 
+                               FontSize="24" 
+                               FontAttributes="Bold"
+                               TextColor="#FFF8DC"/>
+                        <Label Text="Trouvez votre prochain spot" 
+                               FontSize="14" 
+                               TextColor="#DEB887"
+                               Margin="0,2,0,0"/>
+                    </StackLayout>
+                    
+                    <Frame Grid.Column="1" 
+                           BackgroundColor="Transparent"
+                           BorderColor="#D4A574"
+                           CornerRadius="25"
+                           Padding="10"
+                           HasShadow="False">
+                        <Label Text="🍻" FontSize="20"/>
                     </Frame>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-
-    </Grid>
+                </Grid>
+            </Frame>
+            
+            <!-- Section de sélection de distance modernisée -->
+            <Frame Grid.Row="1" 
+                   BackgroundColor="#2C1810" 
+                   Padding="20"
+                   Margin="15,15,15,10"
+                   CornerRadius="15"
+                   HasShadow="True"
+                   BorderColor="#D4A574">
+                <StackLayout>
+                    <Label Text="Rayon de recherche" 
+                           FontSize="16" 
+                           FontAttributes="Bold"
+                           TextColor="#F4A460"
+                           Margin="0,0,0,10"/>
+                    
+                    <Frame BackgroundColor="#4A2C17" 
+                           CornerRadius="12"
+                           Padding="15,10"
+                           HasShadow="False"
+                           BorderColor="#8B4513">
+                        <Picker x:Name="DistancePicker" 
+                                Title="Sélectionner la distance"
+                                SelectedIndexChanged="OnDistanceChanged"
+                                FontSize="16"
+                                TextColor="#DEB887"
+                                BackgroundColor="Transparent">
+                            <Picker.ItemsSource>
+                                <x:Array Type="{x:Type x:String}">
+                                    <x:String>🚶‍♂️ 1 km</x:String>
+                                    <x:String>🚲 3 km</x:String>
+                                    <x:String>🚗 5 km</x:String>
+                                    <x:String>🏃‍♂️ 10 km</x:String>
+                                </x:Array>
+                            </Picker.ItemsSource>
+                        </Picker>
+                    </Frame>
+                    
+                    <!-- Indication shake -->
+                    <Frame BackgroundColor="#4A2C17" 
+                           CornerRadius="10"
+                           Padding="12"
+                           Margin="0,10,0,0"
+                           HasShadow="False"
+                           BorderColor="#CD853F">
+                        <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+                            <Label Text="📱" FontSize="16" VerticalOptions="Center"/>
+                            <Label Text="Secouez votre téléphone pour un bar aléatoire !" 
+                                   FontSize="13" 
+                                   TextColor="#F4A460"
+                                   VerticalOptions="Center"
+                                   FontAttributes="Italic"/>
+                        </StackLayout>
+                    </Frame>
+                </StackLayout>
+            </Frame>
+            
+            <!-- Conteneur principal avec liste des bars -->
+            <Grid Grid.Row="2" Margin="15,0,15,15">
+                <!-- Liste des bars modernisée -->
+                <CollectionView x:Name="BarsCollectionView">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame Margin="0,5" 
+                                   BackgroundColor="#2C1810"
+                                   BorderColor="#D4A574" 
+                                   CornerRadius="18"
+                                   HasShadow="True"
+                                   Padding="0">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type pages:BarsListPage}}, Path=BindingContext.OpenMapCommand}"
+                                                          CommandParameter="{Binding .}" />
+                                </Frame.GestureRecognizers>
+                                
+                                <Grid Padding="20">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <!-- Icône du bar -->
+                                    <Frame Grid.Column="0" 
+                                           BackgroundColor="#B8860B"
+                                           CornerRadius="25"
+                                           Padding="12"
+                                           HasShadow="False"
+                                           VerticalOptions="Start"
+                                           Margin="0,0,15,0">
+                                        <Label Text="🍺" 
+                                               FontSize="20"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center"/>
+                                    </Frame>
+                                    
+                                    <!-- Informations du bar -->
+                                    <StackLayout Grid.Column="1" VerticalOptions="Center">
+                                        <Label Text="{Binding Name}" 
+                                               FontSize="18" 
+                                               FontAttributes="Bold"
+                                               TextColor="#F4A460"
+                                               LineBreakMode="TailTruncation"/>
+                                        <Label Text="{Binding Address}" 
+                                               FontSize="14" 
+                                               TextColor="#DEB887"
+                                               LineBreakMode="TailTruncation"
+                                               Margin="0,2,0,0"/>
+                                    </StackLayout>
+                                    
+                                    <!-- Distance et flèche -->
+                                    <StackLayout Grid.Column="2" 
+                                                 VerticalOptions="Center"
+                                                 HorizontalOptions="End">
+                                        <Frame BackgroundColor="#D4A574" 
+                                               CornerRadius="15"
+                                               Padding="8,4"
+                                               HasShadow="False"
+                                               HorizontalOptions="End">
+                                            <Label Text="{Binding Distance, StringFormat='{0:F1}km'}" 
+                                                   FontSize="12" 
+                                                   FontAttributes="Bold"
+                                                   TextColor="#2C1810"
+                                                   HorizontalOptions="Center"/>
+                                        </Frame>
+                                        <Label Text="→" 
+                                               FontSize="16" 
+                                               TextColor="#CD853F"
+                                               HorizontalOptions="Center"
+                                               Margin="0,5,0,0"/>
+                                    </StackLayout>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+                
+                <!-- Indicateur de chargement modernisé -->
+                <Frame x:Name="LoadingFrame" 
+                       BackgroundColor="#2C1810" 
+                       Opacity="0.98"
+                       IsVisible="False"
+                       CornerRadius="20"
+                       HasShadow="True"
+                       HorizontalOptions="Fill"
+                       VerticalOptions="Fill"
+                       Margin="20"
+                       BorderColor="#D4A574">
+                    <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="20">
+                        
+                        <!-- Animation de chargement personnalisée -->
+                        <Frame BackgroundColor="#B8860B" 
+                               CornerRadius="35"
+                               Padding="20"
+                               HasShadow="False">
+                            <ActivityIndicator x:Name="LoadingIndicator" 
+                                               IsRunning="False"
+                                               Color="#FFF8DC"
+                                               HeightRequest="40"
+                                               WidthRequest="40"/>
+                        </Frame>
+                        
+                        <StackLayout HorizontalOptions="Center" Spacing="5">
+                            <Label x:Name="LoadingText" 
+                                   Text="Chargement des bars..." 
+                                   FontSize="18"
+                                   FontAttributes="Bold"
+                                   TextColor="#F4A460"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="Veuillez patienter..." 
+                                   FontSize="14"
+                                   TextColor="#DEB887"
+                                   HorizontalOptions="Center"/>
+                        </StackLayout>
+                        
+                        <!-- Barre de progression stylisée -->
+                        <Frame BackgroundColor="#4A2C17" 
+                               CornerRadius="10"
+                               Padding="0"
+                               HasShadow="False"
+                               WidthRequest="200"
+                               HeightRequest="6">
+                            <Frame BackgroundColor="#D4A574" 
+                                   CornerRadius="10"
+                                   Padding="0"
+                                   HasShadow="False"
+                                   HorizontalOptions="Start"
+                                   WidthRequest="60"/>
+                        </Frame>
+                    </StackLayout>
+                </Frame>
+                
+                <!-- Message quand aucun bar n'est trouvé -->
+                <Frame x:Name="EmptyStateFrame" 
+                       BackgroundColor="Transparent"
+                       IsVisible="False"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       Padding="20">
+                    <StackLayout HorizontalOptions="Center" Spacing="15">
+                        <Label Text="🔍" FontSize="60" HorizontalOptions="Center"/>
+                        <Label Text="Aucun bar trouvé" 
+                               FontSize="20" 
+                               FontAttributes="Bold"
+                               TextColor="#F4A460"
+                               HorizontalOptions="Center"/>
+                        <Label Text="Essayez d'augmenter la distance de recherche" 
+                               FontSize="14" 
+                               TextColor="#DEB887"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center"/>
+                    </StackLayout>
+                </Frame>
+            </Grid>
+        </Grid>
+    </ScrollView>
 </ContentPage>

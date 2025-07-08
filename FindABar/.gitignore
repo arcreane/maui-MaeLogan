@@ -1,2 +1,5 @@
 .env
 Resources/Raw/appSettings.json
+
+obj/
+bin/

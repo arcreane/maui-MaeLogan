@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="FindABar.Pages.RandomBarPopup"
+    Title="Bar Mystère"
+    BackgroundColor="#1A0F0A">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <!-- Gradients inspirés de la bière blonde -->
+            <LinearGradientBrush x:Key="HeaderGradient" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#D4A574" Offset="0.0" />
+                <GradientStop Color="#B8860B" Offset="1.0" />
+            </LinearGradientBrush>
+            
+            <LinearGradientBrush x:Key="CardGradient" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#2C1810" Offset="0.0" />
+                <GradientStop Color="#4A2C17" Offset="1.0" />
+            </LinearGradientBrush>
+            
+            <LinearGradientBrush x:Key="DirectionGradient" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#FF4500" Offset="0.0" />
+                <GradientStop Color="#FF6347" Offset="1.0" />
+            </LinearGradientBrush>
+            
+            <!-- Shadows -->
+            <Shadow x:Key="CardShadow" 
+                    Brush="Black" 
+                    Opacity="0.3" 
+                    Radius="20" 
+                    Offset="0,8" />
+                    
+            <Shadow x:Key="ButtonShadow" 
+                    Brush="Black" 
+                    Opacity="0.4" 
+                    Radius="15" 
+                    Offset="0,5" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header avec gradient moderne -->
+        <Border Grid.Row="0" 
+                Background="{StaticResource HeaderGradient}"
+                Padding="0,50,0,30"
+                Shadow="{StaticResource CardShadow}">
+            <StackLayout Spacing="8">
+                <Label Text="✨ BAR MYSTÈRE ✨" 
+                       FontSize="28" 
+                       FontAttributes="Bold" 
+                       TextColor="White"
+                       HorizontalOptions="Center"/>
+                <Label Text="Secouer pour découvrir un nouveau bar !" 
+                       FontSize="16" 
+                       TextColor="#FFF8DC"
+                       HorizontalOptions="Center"
+                       Opacity="0.9"/>
+            </StackLayout>
+        </Border>
+
+        <!-- Contenu principal -->
+        <ScrollView Grid.Row="1" Padding="20" VerticalScrollBarVisibility="Never">
+            <StackLayout Spacing="25">
+                
+                <!-- Carte d'information du bar -->
+                <Border Background="{StaticResource CardGradient}"
+                        StrokeThickness="1"
+                        Stroke="#D4A574"
+                        StrokeShape="RoundRectangle 20"
+                        Padding="25"
+                        Shadow="{StaticResource CardShadow}">
+                    <StackLayout Spacing="12">
+                        <Label x:Name="BarNameLabel" 
+                               FontSize="24" 
+                               FontAttributes="Bold" 
+                               TextColor="#F4A460"
+                               HorizontalOptions="Center"
+                               LineBreakMode="TailTruncation"/>
+                        
+                        <BoxView HeightRequest="1" 
+                                 BackgroundColor="#D4A574" 
+                                 HorizontalOptions="FillAndExpand"
+                                 Margin="20,0"/>
+                        
+                        <StackLayout Orientation="Horizontal" 
+                                     HorizontalOptions="Center"
+                                     Spacing="15">
+                            <Label Text="📍" 
+                                   FontSize="18" 
+                                   VerticalOptions="Center"/>
+                            <Label x:Name="BarAddressLabel" 
+                                   FontSize="16" 
+                                   TextColor="#DEB887"
+                                   VerticalOptions="Center"
+                                   LineBreakMode="TailTruncation"/>
+                        </StackLayout>
+                        
+                        <Border BackgroundColor="#B8860B"
+                                StrokeShape="RoundRectangle 15"
+                                Padding="12,8"
+                                HorizontalOptions="Center">
+                            <Label x:Name="BarDistanceLabel" 
+                                   FontSize="16" 
+                                   TextColor="White"
+                                   FontAttributes="Bold"
+                                   HorizontalOptions="Center"/>
+                        </Border>
+                    </StackLayout>
+                </Border>
+
+                <!-- Boussole simplifiée -->
+                <Border Background="{StaticResource CardGradient}"
+                        StrokeThickness="1"
+                        Stroke="#D4A574"
+                        StrokeShape="RoundRectangle 20"
+                        Padding="30"
+                        Shadow="{StaticResource CardShadow}">
+                    <StackLayout Spacing="20">
+                        
+                        <!-- Titre -->
+                        <Label Text="🧭 DIRECTION DU BAR" 
+                               FontSize="18" 
+                               FontAttributes="Bold" 
+                               TextColor="#F4A460"
+                               HorizontalOptions="Center"/>
+                        
+                        <!-- Cercle de la boussole -->
+                        <Grid HeightRequest="200" WidthRequest="200" HorizontalOptions="Center">
+                            
+                            <!-- Cercle externe -->
+                            <Border Background="#2C1810"
+                                    Stroke="#D4A574"
+                                    StrokeThickness="3"
+                                    StrokeShape="Ellipse"
+                                    HeightRequest="200"
+                                    WidthRequest="200">
+                                <Border.Shadow>
+                                    <Shadow Brush="#B8860B" Opacity="0.3" Radius="20" Offset="0,8"/>
+                                </Border.Shadow>
+                            </Border>
+                            
+                            <!-- Cercle interne -->
+                            <Border Background="#4A2C17"
+                                    Stroke="#CD853F"
+                                    StrokeThickness="1"
+                                    StrokeShape="Ellipse"
+                                    HeightRequest="160"
+                                    WidthRequest="160"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"/>
+                            
+                            <!-- Indicateur de direction vers le bar -->
+                            <ContentView x:Name="DirectionIndicator" 
+                                         HorizontalOptions="Center"
+                                         VerticalOptions="Center">
+                                <StackLayout Spacing="0" HorizontalOptions="Center">
+                                    
+                                    <!-- Flèche principale pointant vers le bar -->
+                                    <Polygon Points="0,0 15,50 0,65 -15,50"
+                                             Fill="{StaticResource DirectionGradient}"
+                                             Stroke="#FF4500"
+                                             StrokeThickness="2"
+                                             HorizontalOptions="Center">
+                                        <Polygon.Shadow>
+                                            <Shadow Brush="#FF4500" Opacity="0.6" Radius="8" Offset="0,3"/>
+                                        </Polygon.Shadow>
+                                    </Polygon>
+                                    
+                                    <!-- Centre avec icône bière -->
+                                    <Border Background="#FFF8DC"
+                                            Stroke="#D4A574"
+                                            StrokeThickness="2"
+                                            StrokeShape="Ellipse"
+                                            HeightRequest="30"
+                                            WidthRequest="30"
+                                            HorizontalOptions="Center"
+                                            VerticalOptions="Center"
+                                            Margin="0,-15,0,0">
+                                        <Label Text="🍺"
+                                               FontSize="14"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center"/>
+                                    </Border>
+                                </StackLayout>
+                            </ContentView>
+                            
+                            <!-- Marqueur "VOUS" en bas -->
+                            <StackLayout HorizontalOptions="Center" 
+                                         VerticalOptions="End" 
+                                         Margin="0,15">
+                                <Border BackgroundColor="#D4A574" 
+                                        StrokeShape="RoundRectangle 10"
+                                        Padding="8,4">
+                                    <Label Text="VOUS" 
+                                           TextColor="White"
+                                           FontSize="12"
+                                           FontAttributes="Bold"
+                                           HorizontalOptions="Center"/>
+                                </Border>
+                            </StackLayout>
+                            
+                        </Grid>
+                        
+                        <!-- Informations de direction -->
+                        <StackLayout Spacing="8">
+                            <Label x:Name="DirectionLabel" 
+                                   Text="Direction: --°"
+                                   FontSize="18"
+                                   TextColor="#F4A460"
+                                   FontAttributes="Bold"
+                                   HorizontalOptions="Center"/>
+                            <Label x:Name="CompassDirectionLabel" 
+                                   Text="--"
+                                   FontSize="16"
+                                   TextColor="#DEB887"
+                                   HorizontalOptions="Center"/>
+                        </StackLayout>
+                        
+                        <!-- Instruction -->
+                        <Label Text="La flèche pointe vers le bar" 
+                               FontSize="14"
+                               TextColor="#DEB887"
+                               HorizontalOptions="Center"
+                               Opacity="0.8"/>
+                        
+                    </StackLayout>
+                </Border>
+            </StackLayout>
+        </ScrollView>
+
+        <!-- Boutons modernes -->
+        <Grid Grid.Row="2" Padding="20,15,20,35" ColumnSpacing="15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <Border Grid.Column="0" 
+                    Background="{StaticResource HeaderGradient}"
+                    StrokeShape="RoundRectangle 15"
+                    Shadow="{StaticResource ButtonShadow}">
+                <Button Text="🗺️ Ouvrir Maps" 
+                        BackgroundColor="Transparent"
+                        TextColor="White"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        Clicked="OnOpenMapsClicked"
+                        Padding="0,15"/>
+            </Border>
+            
+            <Border Grid.Column="1" 
+                    BackgroundColor="#4A2C17"
+                    StrokeThickness="1"
+                    Stroke="#8B4513"
+                    StrokeShape="RoundRectangle 15"
+                    Shadow="{StaticResource ButtonShadow}">
+                <Button Text="↩️ Retour" 
+                        BackgroundColor="Transparent"
+                        TextColor="White"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        Clicked="OnBackClicked"
+                        Padding="0,15"/>
+            </Border>
+        </Grid>
+    </Grid>
+</ContentPage>
