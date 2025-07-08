@@ -1,4 +1,5 @@
 using FindABar.Models;
+using FindABar.Services;
 using Microsoft.Maui.Devices.Sensors;
 
 namespace FindABar.Pages;
@@ -118,12 +119,12 @@ public partial class RandomBarPopup : ContentPage
         
         foreach (var angle in _compassReadings)
         {
-            sinSum += Math.Sin(ToRadians(angle));
-            cosSum += Math.Cos(ToRadians(angle));
+            sinSum += Math.Sin(GeoHelper.ToRadians(angle));
+            cosSum += Math.Cos(GeoHelper.ToRadians(angle));
         }
         
         var avgAngle = Math.Atan2(sinSum, cosSum);
-        return NormalizeAngle(ToDegrees(avgAngle));
+        return NormalizeAngle(GeoHelper.ToDegrees(avgAngle));
     }
 
     private async Task UpdateCompassDirection(double relativeAngle)
@@ -157,21 +158,18 @@ public partial class RandomBarPopup : ContentPage
 
     private static double CalculateBearing(double lat1, double lon1, double lat2, double lon2)
     {
-        var dLon = ToRadians(lon2 - lon1);
-        var lat1Rad = ToRadians(lat1);
-        var lat2Rad = ToRadians(lat2);
+        var dLon = GeoHelper.ToRadians(lon2 - lon1);
+        var lat1Rad = GeoHelper.ToRadians(lat1);
+        var lat2Rad = GeoHelper.ToRadians(lat2);
 
         var y = Math.Sin(dLon) * Math.Cos(lat2Rad);
         var x = Math.Cos(lat1Rad) * Math.Sin(lat2Rad) - 
                 Math.Sin(lat1Rad) * Math.Cos(lat2Rad) * Math.Cos(dLon);
         
-        var bearing = ToDegrees(Math.Atan2(y, x));
+        var bearing = GeoHelper.ToDegrees(Math.Atan2(y, x));
         return NormalizeAngle(bearing);
     }
-
-    private static double ToRadians(double degrees) => degrees * Math.PI / 180;
-    private static double ToDegrees(double radians) => radians * 180 / Math.PI;
-
+    
     private string GetCompassDirection(double bearing)
     {
         var directions = new[]

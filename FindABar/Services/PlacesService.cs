@@ -19,7 +19,8 @@ public class PlacesService
                              [out:json];
                              node
                                ["amenity"="bar"]
-                               (around:{radiusInMeters},{latitude.ToString(CultureInfo.InvariantCulture)},{longitude.ToString(CultureInfo.InvariantCulture)});
+                               (around:{radiusInMeters},{latitude.ToString(CultureInfo.InvariantCulture)},
+                               {longitude.ToString(CultureInfo.InvariantCulture)});
                              out;
                              """;
 

@@ -61,14 +61,11 @@ public partial class BarsListPage : ContentPage
     private async void OnAccelerometerReadingChanged(object? sender, AccelerometerChangedEventArgs e)
     {
         if (!_isShakeEnabled || Bars.Count == 0) return;
-
         var reading = e.Reading;
-        
         // Calculer la magnitude de l'accélération
         var magnitude = Math.Sqrt(reading.Acceleration.X * reading.Acceleration.X + 
                                  reading.Acceleration.Y * reading.Acceleration.Y + 
                                  reading.Acceleration.Z * reading.Acceleration.Z);
-
         // Détection de secousse (seuil ajustable)
         if (magnitude > 2.5 && DateTime.Now - _lastShakeTime > _shakeDelay)
         {
